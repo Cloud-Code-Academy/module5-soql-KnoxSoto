@@ -25,12 +25,18 @@ public with sharing class SOQL {
      * Question 1
      * Update/Uncomment the template code to create a method
      * Returns all leads from Salesforce Org
-     * @return List of all leads with Id, LastName, Company, Phone, Email
+     * @return List of all leads with Id, LastName, Company, Phone, Email 
      * Update the corresponding test class and testGetAllLeads method to cover this method
      */
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
     //}
+
+     public static List<Lead> GetAllLeads(){
+        List<Lead> getLeads = [SELECT Id, Name, LastName, Company, Phone,Email
+        FROM Lead]; 
+        return getLeads;
+     }
 
     /**
      * Question 2
@@ -43,6 +49,13 @@ public with sharing class SOQL {
     //  The body of the method
     //}
 
+    public static List<Contact> getContactsByFirstName(){
+        List<Contact> contacts = [SELECT Id, FirstName, LastName 
+                   FROM Contact 
+                   WHERE FirstName = 'John'];
+           return contacts;
+    }
+
     /**
      * Question 3
      * Update/Uncomment the template code to create a method
@@ -53,6 +66,15 @@ public with sharing class SOQL {
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
     //}
+       Public static Set<Id> GetContactIdsByLastName(){
+        List<Contact> contacts = [SELECT FirstName,LastName 
+        FROM Contact WHERE LastName = 'Smith' OR LastName = 'Jones'];
+        Set<Id> contactId = new Set<Id>();
+        for(Contact c : contacts){
+            contactId.add(c.Id);
+        }
+           return contactId;
+       }
 
     /**
      * Question 4
@@ -66,6 +88,16 @@ public with sharing class SOQL {
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
     //}
+    public static List<Opportunity> getClosedWonOpportunityCountByAccount (Id accountId){
+        List<Opportunity> opp = [SELECT Id, StageName, AccountId, Name, Description
+        FROM Opportunity
+        WHERE StageName = 'Closed Won' AND AccountId =: accountId
+        Limit 1];
+
+        return opp;
+
+        
+    }
 
     /**
      * Question 5
@@ -77,7 +109,10 @@ public with sharing class SOQL {
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
     //}
-
+      public static Integer GetAccountCount(Integer totalAccounts){
+           totalAccounts = [SELECT COUNT() FROM ACCOUNT];
+           return totalAccounts;
+      }
     /**
      * Question 6
      * Update/Uncomment the template code to create a method
@@ -87,7 +122,18 @@ public with sharing class SOQL {
      */
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
-    //}
+    //}  
+    public static Map<Id, Task> getTasksDueNextWeek(Map<Id,task> taskMap){
+        List<Task> getTask = [SELECT Id,ActivityDate 
+        FROM Task 
+        WHERE ActivityDate >= TODAY and ActivityDate <= NEXT_N_DAYS:7];
+        
+        for(Task t: getTask){
+            taskMap.put(t.Id,t);
+        }
+        return taskMap;
+    }
+
 
     /**
      * Question 7
@@ -99,7 +145,7 @@ public with sharing class SOQL {
     //[public | private ] [static] data_type method_name (input parameters) {
     //  The body of the method
     //}
-
+   
     /**
      * Question 8
      * Retrieves all Opportunities that have a specific keyword in their Name.
